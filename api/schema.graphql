@@ -6,9 +6,11 @@ type User {
   name: String
   email: String
   password: PasswordState
-  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0): [Post!]
-  postsCount(where: PostWhereInput! = {}): Int
   createdAt: DateTime
+  groupes(where: GroupeWhereInput! = {}, orderBy: [GroupeOrderByInput!]! = [], take: Int, skip: Int! = 0): [Groupe!]
+  groupesCount(where: GroupeWhereInput! = {}): Int
+  messages(where: MessageWhereInput! = {}, orderBy: [MessageOrderByInput!]! = [], take: Int, skip: Int! = 0): [Message!]
+  messagesCount(where: MessageWhereInput! = {}): Int
 }
 
 type PasswordState {
@@ -29,8 +31,9 @@ input UserWhereInput {
   id: IDFilter
   name: StringFilter
   email: StringFilter
-  posts: PostManyRelationFilter
   createdAt: DateTimeNullableFilter
+  groupes: GroupeManyRelationFilter
+  messages: MessageManyRelationFilter
 }
 
 input IDFilter {
@@ -72,12 +75,6 @@ input NestedStringFilter {
   not: NestedStringFilter
 }
 
-input PostManyRelationFilter {
-  every: PostWhereInput
-  some: PostWhereInput
-  none: PostWhereInput
-}
-
 input DateTimeNullableFilter {
   equals: DateTime
   in: [DateTime!]
@@ -87,6 +84,18 @@ input DateTimeNullableFilter {
   gt: DateTime
   gte: DateTime
   not: DateTimeNullableFilter
+}
+
+input GroupeManyRelationFilter {
+  every: GroupeWhereInput
+  some: GroupeWhereInput
+  none: GroupeWhereInput
+}
+
+input MessageManyRelationFilter {
+  every: MessageWhereInput
+  some: MessageWhereInput
+  none: MessageWhereInput
 }
 
 input UserOrderByInput {
@@ -105,15 +114,23 @@ input UserUpdateInput {
   name: String
   email: String
   password: String
-  posts: PostRelateToManyForUpdateInput
   createdAt: DateTime
+  groupes: GroupeRelateToManyForUpdateInput
+  messages: MessageRelateToManyForUpdateInput
 }
 
-input PostRelateToManyForUpdateInput {
-  disconnect: [PostWhereUniqueInput!]
-  set: [PostWhereUniqueInput!]
-  create: [PostCreateInput!]
-  connect: [PostWhereUniqueInput!]
+input GroupeRelateToManyForUpdateInput {
+  disconnect: [GroupeWhereUniqueInput!]
+  set: [GroupeWhereUniqueInput!]
+  create: [GroupeCreateInput!]
+  connect: [GroupeWhereUniqueInput!]
+}
+
+input MessageRelateToManyForUpdateInput {
+  disconnect: [MessageWhereUniqueInput!]
+  set: [MessageWhereUniqueInput!]
+  create: [MessageCreateInput!]
+  connect: [MessageWhereUniqueInput!]
 }
 
 input UserUpdateArgs {
@@ -125,58 +142,120 @@ input UserCreateInput {
   name: String
   email: String
   password: String
-  posts: PostRelateToManyForCreateInput
   createdAt: DateTime
+  groupes: GroupeRelateToManyForCreateInput
+  messages: MessageRelateToManyForCreateInput
 }
 
-input PostRelateToManyForCreateInput {
-  create: [PostCreateInput!]
-  connect: [PostWhereUniqueInput!]
+input GroupeRelateToManyForCreateInput {
+  create: [GroupeCreateInput!]
+  connect: [GroupeWhereUniqueInput!]
 }
 
-type Post {
+input MessageRelateToManyForCreateInput {
+  create: [MessageCreateInput!]
+  connect: [MessageWhereUniqueInput!]
+}
+
+type Groupe {
   id: ID!
-  title: String
-  content: Post_content_Document
-  author: User
-  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0): [Tag!]
-  tagsCount(where: TagWhereInput! = {}): Int
+  name: String
+  users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0): [User!]
+  usersCount(where: UserWhereInput! = {}): Int
+  messages(where: MessageWhereInput! = {}, orderBy: [MessageOrderByInput!]! = [], take: Int, skip: Int! = 0): [Message!]
+  messagesCount(where: MessageWhereInput! = {}): Int
 }
 
-type Post_content_Document {
-  document(hydrateRelationships: Boolean! = false): JSON!
-}
-
-input PostWhereUniqueInput {
+input GroupeWhereUniqueInput {
   id: ID
 }
 
-input PostWhereInput {
-  AND: [PostWhereInput!]
-  OR: [PostWhereInput!]
-  NOT: [PostWhereInput!]
+input GroupeWhereInput {
+  AND: [GroupeWhereInput!]
+  OR: [GroupeWhereInput!]
+  NOT: [GroupeWhereInput!]
   id: IDFilter
-  title: StringFilter
-  author: UserWhereInput
-  tags: TagManyRelationFilter
+  name: StringFilter
+  users: UserManyRelationFilter
+  messages: MessageManyRelationFilter
 }
 
-input TagManyRelationFilter {
-  every: TagWhereInput
-  some: TagWhereInput
-  none: TagWhereInput
+input UserManyRelationFilter {
+  every: UserWhereInput
+  some: UserWhereInput
+  none: UserWhereInput
 }
 
-input PostOrderByInput {
+input GroupeOrderByInput {
   id: OrderDirection
-  title: OrderDirection
+  name: OrderDirection
 }
 
-input PostUpdateInput {
-  title: String
+input GroupeUpdateInput {
+  name: String
+  users: UserRelateToManyForUpdateInput
+  messages: MessageRelateToManyForUpdateInput
+}
+
+input UserRelateToManyForUpdateInput {
+  disconnect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
+  create: [UserCreateInput!]
+  connect: [UserWhereUniqueInput!]
+}
+
+input GroupeUpdateArgs {
+  where: GroupeWhereUniqueInput!
+  data: GroupeUpdateInput!
+}
+
+input GroupeCreateInput {
+  name: String
+  users: UserRelateToManyForCreateInput
+  messages: MessageRelateToManyForCreateInput
+}
+
+input UserRelateToManyForCreateInput {
+  create: [UserCreateInput!]
+  connect: [UserWhereUniqueInput!]
+}
+
+type Message {
+  id: ID!
+  content: Message_content_Document
+  createAt: DateTime
+  user: User
+  groupe: Groupe
+}
+
+type Message_content_Document {
+  document(hydrateRelationships: Boolean! = false): JSON!
+}
+
+input MessageWhereUniqueInput {
+  id: ID
+}
+
+input MessageWhereInput {
+  AND: [MessageWhereInput!]
+  OR: [MessageWhereInput!]
+  NOT: [MessageWhereInput!]
+  id: IDFilter
+  createAt: DateTimeNullableFilter
+  user: UserWhereInput
+  groupe: GroupeWhereInput
+}
+
+input MessageOrderByInput {
+  id: OrderDirection
+  createAt: OrderDirection
+}
+
+input MessageUpdateInput {
   content: JSON
-  author: UserRelateToOneForUpdateInput
-  tags: TagRelateToManyForUpdateInput
+  createAt: DateTime
+  user: UserRelateToOneForUpdateInput
+  groupe: GroupeRelateToOneForUpdateInput
 }
 
 input UserRelateToOneForUpdateInput {
@@ -185,23 +264,22 @@ input UserRelateToOneForUpdateInput {
   disconnect: Boolean
 }
 
-input TagRelateToManyForUpdateInput {
-  disconnect: [TagWhereUniqueInput!]
-  set: [TagWhereUniqueInput!]
-  create: [TagCreateInput!]
-  connect: [TagWhereUniqueInput!]
+input GroupeRelateToOneForUpdateInput {
+  create: GroupeCreateInput
+  connect: GroupeWhereUniqueInput
+  disconnect: Boolean
 }
 
-input PostUpdateArgs {
-  where: PostWhereUniqueInput!
-  data: PostUpdateInput!
+input MessageUpdateArgs {
+  where: MessageWhereUniqueInput!
+  data: MessageUpdateInput!
 }
 
-input PostCreateInput {
-  title: String
+input MessageCreateInput {
   content: JSON
-  author: UserRelateToOneForCreateInput
-  tags: TagRelateToManyForCreateInput
+  createAt: DateTime
+  user: UserRelateToOneForCreateInput
+  groupe: GroupeRelateToOneForCreateInput
 }
 
 input UserRelateToOneForCreateInput {
@@ -209,91 +287,9 @@ input UserRelateToOneForCreateInput {
   connect: UserWhereUniqueInput
 }
 
-input TagRelateToManyForCreateInput {
-  create: [TagCreateInput!]
-  connect: [TagWhereUniqueInput!]
-}
-
-type Tag {
-  id: ID!
-  name: String
-  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0): [Post!]
-  postsCount(where: PostWhereInput! = {}): Int
-}
-
-input TagWhereUniqueInput {
-  id: ID
-}
-
-input TagWhereInput {
-  AND: [TagWhereInput!]
-  OR: [TagWhereInput!]
-  NOT: [TagWhereInput!]
-  id: IDFilter
-  name: StringFilter
-  posts: PostManyRelationFilter
-}
-
-input TagOrderByInput {
-  id: OrderDirection
-  name: OrderDirection
-}
-
-input TagUpdateInput {
-  name: String
-  posts: PostRelateToManyForUpdateInput
-}
-
-input TagUpdateArgs {
-  where: TagWhereUniqueInput!
-  data: TagUpdateInput!
-}
-
-input TagCreateInput {
-  name: String
-  posts: PostRelateToManyForCreateInput
-}
-
-type Task {
-  id: ID!
-  title: String
-  description: Task_description_Document
-}
-
-type Task_description_Document {
-  document(hydrateRelationships: Boolean! = false): JSON!
-}
-
-input TaskWhereUniqueInput {
-  id: ID
-}
-
-input TaskWhereInput {
-  AND: [TaskWhereInput!]
-  OR: [TaskWhereInput!]
-  NOT: [TaskWhereInput!]
-  id: IDFilter
-  title: StringFilter
-}
-
-input TaskOrderByInput {
-  id: OrderDirection
-  title: OrderDirection
-}
-
-input TaskUpdateInput {
-  title: String
-  description: JSON
-}
-
-input TaskUpdateArgs {
-  where: TaskWhereUniqueInput!
-  data: TaskUpdateInput!
-}
-
-input TaskCreateInput {
-  title: String
-  description: JSON
+input GroupeRelateToOneForCreateInput {
+  create: GroupeCreateInput
+  connect: GroupeWhereUniqueInput
 }
 
 """
@@ -308,24 +304,18 @@ type Mutation {
   updateUsers(data: [UserUpdateArgs!]!): [User]
   deleteUser(where: UserWhereUniqueInput!): User
   deleteUsers(where: [UserWhereUniqueInput!]!): [User]
-  createPost(data: PostCreateInput!): Post
-  createPosts(data: [PostCreateInput!]!): [Post]
-  updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
-  updatePosts(data: [PostUpdateArgs!]!): [Post]
-  deletePost(where: PostWhereUniqueInput!): Post
-  deletePosts(where: [PostWhereUniqueInput!]!): [Post]
-  createTag(data: TagCreateInput!): Tag
-  createTags(data: [TagCreateInput!]!): [Tag]
-  updateTag(where: TagWhereUniqueInput!, data: TagUpdateInput!): Tag
-  updateTags(data: [TagUpdateArgs!]!): [Tag]
-  deleteTag(where: TagWhereUniqueInput!): Tag
-  deleteTags(where: [TagWhereUniqueInput!]!): [Tag]
-  createTask(data: TaskCreateInput!): Task
-  createTasks(data: [TaskCreateInput!]!): [Task]
-  updateTask(where: TaskWhereUniqueInput!, data: TaskUpdateInput!): Task
-  updateTasks(data: [TaskUpdateArgs!]!): [Task]
-  deleteTask(where: TaskWhereUniqueInput!): Task
-  deleteTasks(where: [TaskWhereUniqueInput!]!): [Task]
+  createGroupe(data: GroupeCreateInput!): Groupe
+  createGroupes(data: [GroupeCreateInput!]!): [Groupe]
+  updateGroupe(where: GroupeWhereUniqueInput!, data: GroupeUpdateInput!): Groupe
+  updateGroupes(data: [GroupeUpdateArgs!]!): [Groupe]
+  deleteGroupe(where: GroupeWhereUniqueInput!): Groupe
+  deleteGroupes(where: [GroupeWhereUniqueInput!]!): [Groupe]
+  createMessage(data: MessageCreateInput!): Message
+  createMessages(data: [MessageCreateInput!]!): [Message]
+  updateMessage(where: MessageWhereUniqueInput!, data: MessageUpdateInput!): Message
+  updateMessages(data: [MessageUpdateArgs!]!): [Message]
+  deleteMessage(where: MessageWhereUniqueInput!): Message
+  deleteMessages(where: [MessageWhereUniqueInput!]!): [Message]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -352,15 +342,12 @@ type Query {
   users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0): [User!]
   user(where: UserWhereUniqueInput!): User
   usersCount(where: UserWhereInput! = {}): Int
-  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0): [Post!]
-  post(where: PostWhereUniqueInput!): Post
-  postsCount(where: PostWhereInput! = {}): Int
-  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0): [Tag!]
-  tag(where: TagWhereUniqueInput!): Tag
-  tagsCount(where: TagWhereInput! = {}): Int
-  tasks(where: TaskWhereInput! = {}, orderBy: [TaskOrderByInput!]! = [], take: Int, skip: Int! = 0): [Task!]
-  task(where: TaskWhereUniqueInput!): Task
-  tasksCount(where: TaskWhereInput! = {}): Int
+  groupes(where: GroupeWhereInput! = {}, orderBy: [GroupeOrderByInput!]! = [], take: Int, skip: Int! = 0): [Groupe!]
+  groupe(where: GroupeWhereUniqueInput!): Groupe
+  groupesCount(where: GroupeWhereInput! = {}): Int
+  messages(where: MessageWhereInput! = {}, orderBy: [MessageOrderByInput!]! = [], take: Int, skip: Int! = 0): [Message!]
+  message(where: MessageWhereUniqueInput!): Message
+  messagesCount(where: MessageWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

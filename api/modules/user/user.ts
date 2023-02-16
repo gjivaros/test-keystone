@@ -16,9 +16,10 @@ export const User = list({
 			isIndexed: "unique",
 		}),
 		password: password({ validation: { isRequired: true } }),
-		posts: relationship({ ref: "Post.author", many: true }),
 		createdAt: timestamp({
 			defaultValue: { kind: "now" },
 		}),
+		groupes: relationship({ ref: "Groupe", many: true }),
+		messages: relationship({ ref: "Message.user", many: true }),
 	},
 });

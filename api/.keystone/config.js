@@ -23,120 +23,79 @@ __export(keystone_exports, {
   default: () => keystone_default
 });
 module.exports = __toCommonJS(keystone_exports);
-var import_core5 = require("@keystone-6/core");
+var import_core4 = require("@keystone-6/core");
 
-// modules/Tag/Tag.ts
+// modules/goupe/groupe.ts
 var import_core = require("@keystone-6/core");
 var import_access = require("@keystone-6/core/access");
 var import_fields = require("@keystone-6/core/fields");
-var Tag = (0, import_core.list)({
+var Groupe = (0, import_core.list)({
   access: import_access.allowAll,
-  ui: {
-    isHidden: true
-  },
   fields: {
     name: (0, import_fields.text)(),
-    posts: (0, import_fields.relationship)({ ref: "Post.tags", many: true })
-  }
-});
-
-// modules/post/post.ts
-var import_core2 = require("@keystone-6/core");
-var import_access2 = require("@keystone-6/core/access");
-var import_fields2 = require("@keystone-6/core/fields");
-var import_fields_document = require("@keystone-6/fields-document");
-var Post = (0, import_core2.list)({
-  access: import_access2.allowAll,
-  fields: {
-    title: (0, import_fields2.text)({ validation: { isRequired: true } }),
-    content: (0, import_fields_document.document)({
-      formatting: true,
-      layouts: [
-        [1, 1],
-        [1, 1, 1],
-        [2, 1],
-        [1, 2],
-        [1, 2, 1]
-      ],
-      links: true,
-      dividers: true
+    users: (0, import_fields.relationship)({
+      ref: "User",
+      many: true
     }),
-    author: (0, import_fields2.relationship)({
-      ref: "User.posts",
-      ui: {
-        displayMode: "cards",
-        cardFields: ["name", "email"],
-        inlineEdit: { fields: ["name", "email"] },
-        linkToItem: true,
-        inlineConnect: true
-      },
-      many: false
-    }),
-    tags: (0, import_fields2.relationship)({
-      ref: "Tag.posts",
-      many: true,
-      ui: {
-        displayMode: "cards",
-        cardFields: ["name"],
-        inlineEdit: { fields: ["name"] },
-        linkToItem: true,
-        inlineConnect: true,
-        inlineCreate: { fields: ["name"] }
-      }
+    messages: (0, import_fields.relationship)({
+      ref: "Message.groupe",
+      many: true
     })
   }
 });
 
-// modules/task/Task.ts
-var import_core3 = require("@keystone-6/core");
-var import_access3 = require("@keystone-6/core/access");
-var import_fields3 = require("@keystone-6/core/fields");
-var import_fields_document2 = require("@keystone-6/fields-document");
-var Task = (0, import_core3.list)({
-  access: import_access3.allowAll,
+// modules/messages/messages.ts
+var import_core2 = require("@keystone-6/core");
+var import_access2 = require("@keystone-6/core/access");
+var import_fields2 = require("@keystone-6/core/fields");
+var import_fields_document = require("@keystone-6/fields-document");
+var Message = (0, import_core2.list)({
+  access: import_access2.allowAll,
   fields: {
-    title: (0, import_fields3.text)({ validation: { isRequired: true } }),
-    description: (0, import_fields_document2.document)({
+    content: (0, import_fields_document.document)({
       formatting: true,
+      dividers: true,
+      links: true,
       layouts: [
         [1, 1],
-        [1, 1, 1],
-        [2, 1],
-        [1, 2],
-        [1, 2, 1]
-      ],
-      links: true,
-      dividers: true
+        [1, 1, 1]
+      ]
+    }),
+    createAt: (0, import_fields2.timestamp)({ defaultValue: { kind: "now" } }),
+    user: (0, import_fields2.relationship)({ ref: "User.messages" }),
+    groupe: (0, import_fields2.relationship)({
+      ref: "Groupe.messages",
+      isFilterable: true
     })
   }
 });
 
 // modules/user/user.ts
-var import_core4 = require("@keystone-6/core");
-var import_access4 = require("@keystone-6/core/access");
-var import_fields4 = require("@keystone-6/core/fields");
-var User = (0, import_core4.list)({
-  access: import_access4.allowAll,
+var import_core3 = require("@keystone-6/core");
+var import_access3 = require("@keystone-6/core/access");
+var import_fields3 = require("@keystone-6/core/fields");
+var User = (0, import_core3.list)({
+  access: import_access3.allowAll,
   fields: {
-    name: (0, import_fields4.text)({ validation: { isRequired: true } }),
-    email: (0, import_fields4.text)({
+    name: (0, import_fields3.text)({ validation: { isRequired: true } }),
+    email: (0, import_fields3.text)({
       validation: { isRequired: true },
       isIndexed: "unique"
     }),
-    password: (0, import_fields4.password)({ validation: { isRequired: true } }),
-    posts: (0, import_fields4.relationship)({ ref: "Post.author", many: true }),
-    createdAt: (0, import_fields4.timestamp)({
+    password: (0, import_fields3.password)({ validation: { isRequired: true } }),
+    createdAt: (0, import_fields3.timestamp)({
       defaultValue: { kind: "now" }
-    })
+    }),
+    groupes: (0, import_fields3.relationship)({ ref: "Groupe", many: true }),
+    messages: (0, import_fields3.relationship)({ ref: "Message.user", many: true })
   }
 });
 
 // schema.ts
 var lists = {
   User,
-  Post,
-  Tag,
-  Task
+  Groupe,
+  Message
 };
 
 // modules/auth/auth.ts
@@ -164,7 +123,7 @@ var session = (0, import_session.statelessSessions)({
 
 // keystone.ts
 var keystone_default = withAuth(
-  (0, import_core5.config)({
+  (0, import_core4.config)({
     db: {
       provider: "sqlite",
       url: "file:./data/keystone.db"

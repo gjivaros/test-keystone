@@ -13,33 +13,33 @@ generator client {
 }
 
 model User {
-  id        String    @id @default(cuid())
-  name      String    @default("")
-  email     String    @unique @default("")
-  password  String
-  posts     Post[]    @relation("Post_author")
-  createdAt DateTime? @default(now())
+  id                String    @id @default(cuid())
+  name              String    @default("")
+  email             String    @unique @default("")
+  password          String
+  createdAt         DateTime? @default(now())
+  groupes           Groupe[]  @relation("User_groupes")
+  messages          Message[] @relation("Message_user")
+  from_Groupe_users Groupe[]  @relation("Groupe_users")
 }
 
-model Post {
-  id       String  @id @default(cuid())
-  title    String  @default("")
-  content  String  @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
-  author   User?   @relation("Post_author", fields: [authorId], references: [id])
-  authorId String? @map("author")
-  tags     Tag[]   @relation("Post_tags")
-
-  @@index([authorId])
+model Groupe {
+  id                String    @id @default(cuid())
+  name              String    @default("")
+  users             User[]    @relation("Groupe_users")
+  messages          Message[] @relation("Message_groupe")
+  from_User_groupes User[]    @relation("User_groupes")
 }
 
-model Tag {
-  id    String @id @default(cuid())
-  name  String @default("")
-  posts Post[] @relation("Post_tags")
-}
+model Message {
+  id       String    @id @default(cuid())
+  content  String    @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
+  createAt DateTime? @default(now())
+  user     User?     @relation("Message_user", fields: [userId], references: [id])
+  userId   String?   @map("user")
+  groupe   Groupe?   @relation("Message_groupe", fields: [groupeId], references: [id])
+  groupeId String?   @map("groupe")
 
-model Task {
-  id          String @id @default(cuid())
-  title       String @default("")
-  description String @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
+  @@index([userId])
+  @@index([groupeId])
 }
